@@ -50,18 +50,36 @@ fontLoader.load(
                 bevelOffset: 0,
                 bevelSegments: 5
             }
-        )
-        /* textGeometry.computeBoundingBox()
-        textGeometry.translate(
-            - textGeometry.boundingBox.max.x * 0.5,
-            - textGeometry.boundingBox.max.y * 0.5,
-            - textGeometry.boundingBox.max.z * 0.5
-        ) */
+        ) 
         textGeometry.center()
 
         const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture})
         const text = new THREE.Mesh(textGeometry, material)
         scene.add(text)
+
+                /**
+         * Animate
+         */
+        const clock = new THREE.Clock()
+
+        const tick = () =>
+        {
+            const elapsedTime = clock.getElapsedTime()
+
+            // Update controls
+            controls.update()
+
+            // Update objects
+            text.rotation.y = 0.1 * elapsedTime
+            text.rotation.x = 0.15 * elapsedTime
+
+            // Render
+            renderer.render(scene, camera)
+
+            // Call tick again on the next frame
+            window.requestAnimationFrame(tick)
+        }
+        tick()
 
         const donutGeometry = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45)
         
@@ -82,11 +100,9 @@ fontLoader.load(
 
             scene.add(donut)
         }
-
         console.timeEnd('donuts')
     }
 )
-
 
 /**
  * Object
@@ -144,23 +160,5 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-/**
- * Animate
- */
-const clock = new THREE.Clock()
 
-const tick = () =>
-{
-    const elapsedTime = clock.getElapsedTime()
 
-    // Update controls
-    controls.update()
-
-    // Render
-    renderer.render(scene, camera)
-
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
-}
-
-tick()
